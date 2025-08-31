@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "listing")
+@Table(name = "listings")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -14,7 +14,7 @@ import lombok.*;
 @Builder(builderMethodName = "of")
 public class Listing {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(name = "user_id", nullable = false)
     private Integer userId;
