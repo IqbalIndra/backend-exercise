@@ -17,4 +17,11 @@ public enum ListingType {
         return Arrays.stream(ListingType.values())
                 .anyMatch(listingType -> listingType.getType().equalsIgnoreCase(value));
     }
+
+    public static ListingType of(String value){
+        return Arrays.stream(ListingType.values())
+                .filter(listingType -> listingType.type.equalsIgnoreCase(value))
+                .findFirst()
+                .orElse(null);
+    }
 }
