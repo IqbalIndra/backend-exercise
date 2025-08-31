@@ -1,7 +1,6 @@
 package com.example._9.listing_service.service;
 
 import com.example._9.listing_service.dto.response.ListingResponse;
-import com.example._9.listing_service.dto.response.UserResponse;
 import com.example._9.listing_service.exception.ValidationErrorException;
 import com.example._9.listing_service.mapper.ListingMapper;
 import com.example._9.listing_service.model.Listing;
@@ -17,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ListingService {
     private final ListingRepository listingRepository;
-    private final UserRestService userRestService;
     private final ListingMapper listingMapper;
 
     public List<?> getListing(Integer pageNum, Integer pageSize, Integer userId){
@@ -32,16 +31,13 @@ public class ListingService {
         Page<Listing> pageListing = null;
         if(ObjectUtils.isEmpty(userId)){
             pageListing = listingRepository.findAll(pageable);
-            return pageListing.get()
-                    .map(listingMapper::mapToListingResponse)
-                    .collect(Collectors.toList());
         }else{
             pageListing = listingRepository.findByUserId(userId, pageable);
-            UserResponse userResponse = userRestService.callGetUserRest(userId);
-            return pageListing.get()
-                    .map(listing -> listingMapper.mapToListingUserResponse(listing,userResponse))
-                    .collect(Collectors.toList());
         }
+
+        return pageListing.get()
+                .map(listingMapper::mapToListingResponse)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -51,17 +47,14 @@ public class ListingService {
         if(userId <= 0 || price <= 0)
             throw new ValidationErrorException("Must be greater than 0");
 
-        UserResponse userResponse = userRestService.callGetUserRest(userId);
-        if(userResponse.id() < 0)
-            throw new ValidationErrorException("User not found with id : "+userId);
 
-        long instantTimeMillis = Instant.now().toEpochMilli();
+        long microSecond = ChronoUnit.MICROS.between(Instant.EPOCH, Instant.now()) * (long) 1e6;
         Listing listing = Listing.of()
-                .userId(userResponse.id())
+                .userId(userId)
                 .listingType(ListingType.of(listingType))
                 .price(price)
-                .createdAt((int)instantTimeMillis)
-                .updatedAt((int) instantTimeMillis)
+                .createdAt((int)microSecond)
+                .updatedAt((int) microSecond)
                 .build();
         return listingMapper.mapToListingResponse(listingRepository.save(listing));
     }

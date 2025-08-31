@@ -31,7 +31,7 @@ public class ValidationExceptionHandler {
 
     @ExceptionHandler(ValidationErrorException.class)
     public ResponseEntity<Map<String, Object>> handleCustomValidationExceptions(ValidationErrorException ex) {
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Map.of("result",false,"errors", ex.getMessage()));
     }
 

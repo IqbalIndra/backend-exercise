@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -47,12 +48,12 @@ public class UserService {
         if(userOptional.isPresent())
             throw new ValidationErrorException(String.format("User already exist with name : %s", name));
 
-        long instantTimeMillis = Instant.now().toEpochMilli();
+        long microSecond = ChronoUnit.MICROS.between(Instant.EPOCH, Instant.now()) * (long) 1e6;
 
         User user = User.of()
                 .name(name)
-                .createdAt((int)instantTimeMillis)
-                .updatedAt((int)instantTimeMillis)
+                .createdAt((int)microSecond)
+                .updatedAt((int)microSecond)
                 .build();
         user = userRepository.save(user);
         return new UserResponse(user.getId(), user.getName(), user.getCreatedAt(), user.getUpdatedAt());

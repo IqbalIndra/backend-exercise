@@ -1,4 +1,5 @@
 -- Table structure for table `listings`
+DROP TABLE  IF EXISTS `listings`;
 CREATE TABLE IF NOT EXISTS `listings` (
      `id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
      `user_id` INTEGER NOT NULL,

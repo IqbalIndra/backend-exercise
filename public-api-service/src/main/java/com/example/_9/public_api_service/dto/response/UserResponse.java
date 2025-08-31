@@ -1,4 +1,4 @@
-package com.example._9.listing_service.dto.response;
+package com.example._9.public_api_service.dto.response;
 
 public record UserResponse(Integer id, String name, Integer createdAt, Integer updatedAt) {
 }

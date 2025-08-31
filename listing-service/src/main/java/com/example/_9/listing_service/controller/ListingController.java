@@ -55,7 +55,7 @@ public class ListingController {
 
         Map<String, Object> result = new HashMap<>();
         result.put("result", true);
-        result.put("listings",listing);
+        result.put("listing",listing);
 
         return ResponseEntity.ok(result);
     }
